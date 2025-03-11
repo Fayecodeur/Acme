@@ -7,7 +7,7 @@ import { ArrowRightIcon } from "@heroicons/react/24/outline";
 export default function Home() {
   return (
     <main className="min-h-screen flex flex-col p-6">
-      <div className="flex h-20 shrink-0 items-end rounded-lg bg-blue-500 p-4 md:h-52">
+      <div className="flex h-20 shrink-0 items-end rounded-lg bg-blue-500 p-4 md:h-48">
         <Logo />
       </div>
       <div className="mt-4 flex grow flex-col gap-4 md:flex-row">
@@ -16,6 +16,8 @@ export default function Home() {
             className={`${lusitana.className}text-xl text-gray-800 md:text-3xl md:leading-normal`}
           >
             <strong>Bienvenue chez ACME</strong>
+            <br />
+            <p>Application de Next.js proposée par Vercel</p>
           </p>
           <Link
             href="/login"
