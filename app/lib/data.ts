@@ -17,7 +17,15 @@ export async function FetchCardData() {
       invoicesStatusPromise,
     ]);
     const totalPaidInvoices = formatCurrency(data[2].rows[0].paid ?? "0");
-    return { totalPaidInvoices };
+    const totalPendigInvoices = formatCurrency(data[2].rows[0].pending ?? "0");
+    const numberOfInvoices = Number(data[0].rows[0].count ?? "0");
+    const numberOfCustomers = Number(data[1].rows[0].count ?? "0");
+    return {
+      totalPaidInvoices,
+      totalPendigInvoices,
+      numberOfInvoices,
+      numberOfCustomers,
+    };
   } catch (error) {
     console.error("Database error", error);
     throw new Error("Echec lors de la récupération des données...");
