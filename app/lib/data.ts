@@ -1,5 +1,15 @@
 import { sql } from "@vercel/postgres";
 import { formatCurrency } from "./utils";
+import { Revenue } from "./definitions";
+export async function fetchRevenue() {
+  try {
+    const data = await sql<Revenue>`SELECT * FROM revenue`;
+    return data.rows;
+  } catch (error) {
+    console.error("Database error", error);
+    throw new Error("Echec lors de récupération des données de revenus");
+  }
+}
 
 export async function FetchCardData() {
   try {
