@@ -1,4 +1,4 @@
-import SideNav from "../ui/SideNav";
+import SideNav from "../ui/dashboard/SideNav";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
