@@ -1,6 +1,6 @@
 import { sql } from "@vercel/postgres";
 import { formatCurrency } from "./utils";
-import { Revenue } from "./definitions";
+import { Revenue, LatestInvoiceRaw } from "./definitions";
 export async function fetchRevenue() {
   try {
     const data = await sql<Revenue>`SELECT * FROM revenue`;
@@ -8,6 +8,27 @@ export async function fetchRevenue() {
   } catch (error) {
     console.error("Database error", error);
     throw new Error("Echec lors de récupération des données de revenus");
+  }
+}
+
+export async function fetchLatestInvoices() {
+  try {
+    const data =
+      await sql<LatestInvoiceRaw>` SELECT invoices.amount, customers.name, customers.image_url, customers.email, invoices.id FROM invoices
+    JOIN customers ON invoices.customer_id = customers.id
+        ORDER BY invoices.date DESC
+            LIMIT 5
+    `;
+
+    const latestInvoices = data.rows.map((invoice) => ({
+      ...invoice,
+      amount: formatCurrency(invoice.amount),
+    }));
+
+    return latestInvoices;
+  } catch (error) {
+    console.error("Database error", error);
+    throw new Error("Echec lors de la récupération des données...");
   }
 }
 
