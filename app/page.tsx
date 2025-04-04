@@ -17,7 +17,7 @@ export default function Home() {
           >
             <strong>Bienvenue chez ACME</strong>
             <br />
-            <p>Application de Next.js proposée par Vercel</p>
+            <span>Application de Next.js proposée par Vercel</span>
           </p>
           <Link
             href="/login"
