@@ -1,13 +1,12 @@
 import { Revenue } from "@/app/lib/definitions";
-import { generateYaxis } from "../../lib/utils";
+import { fetchRevenue } from "@/app/lib/data";
+import { generateYaxis } from "@/app/lib/utils";
 import { lusitana } from "@/app/ui/font";
 import { CalendarIcon } from "@heroicons/react/24/outline";
 
-export default async function RevenueChart({
-  revenue,
-}: {
-  revenue: Revenue[];
-}) {
+export default async function RevenueChart() {
+  const revenue = await fetchRevenue();
+
   const chartHeight = 350;
   const topLabel = generateYaxis(revenue);
 
