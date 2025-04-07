@@ -6,6 +6,17 @@ export const formatCurrency = (amount: number) => {
   });
 };
 
+export function formatDateToLocal(dateStr: string, locale: string = "fr-FR") {
+  const options: Intl.DateTimeFormatOptions = {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  };
+
+  const date = new Date(dateStr);
+  return new Intl.DateTimeFormat(locale, options).format(date);
+}
+
 export const generateYaxis = (revenue: Revenue[]) => {
   if (revenue.length === 0) return 1000; // Valeur par défaut pour éviter Math.max([])
 
