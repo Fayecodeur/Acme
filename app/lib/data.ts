@@ -2,7 +2,7 @@ import { sql } from "@vercel/postgres";
 import { unstable_noStore as noStore } from "next/cache";
 
 import { formatCurrency } from "./utils";
-import { Revenue, LatestInvoiceRaw } from "./definitions";
+import { Revenue, LatestInvoiceRaw, InvoicesTable } from "./definitions";
 export async function fetchRevenue() {
   noStore();
   try {
@@ -67,5 +67,41 @@ export async function FetchCardData() {
   } catch (error) {
     console.error("Database error", error);
     throw new Error("Echec lors de la récupération des données...");
+  }
+}
+const ITEMS_PER_PAGE = 5;
+export async function fetchFilteredInvoices(
+  query: string,
+  currentPage: number
+) {
+  noStore();
+  const offset = (currentPage - 1) * ITEMS_PER_PAGE;
+
+  try {
+    const invoices = await sql<InvoicesTable>`
+      SELECT
+        invoices.id,
+        invoices.amount,
+        invoices.date,
+        invoices.status,
+        customers.name,
+        customers.email,
+        customers.image_url
+      FROM invoices
+      JOIN customers ON invoices.customer_id = customers.id
+      WHERE  
+        customers.name ILIKE ${`%${query}%`} OR
+        customers.email ILIKE ${`%${query}%`} OR
+        invoices.amount::text ILIKE ${`%${query}%`} OR
+        invoices.date::text ILIKE ${`%${query}%`} OR
+        invoices.status ILIKE ${`%${query}%`}
+      ORDER BY invoices.date DESC
+      LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset}
+    `;
+
+    return invoices.rows;
+  } catch (error) {
+    console.error("Database error", error);
+    throw new Error("Échec lors de la récupération des factures...");
   }
 }
