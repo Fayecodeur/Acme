@@ -69,7 +69,7 @@ export async function FetchCardData() {
     throw new Error("Echec lors de la récupération des données...");
   }
 }
-const ITEMS_PER_PAGE = 5;
+const ITEMS_PER_PAGE = 6;
 export async function fetchFilteredInvoices(
   query: string,
   currentPage: number
