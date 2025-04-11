@@ -26,9 +26,6 @@ export default async function RevenueChart() {
               (chartHeight / topLabel) * month.revenue,
               20
             ); // Hauteur min 20px
-            console.log(
-              `Mois: ${month.month}, Revenu: ${month.revenue}, Hauteur: ${heightValue}px`
-            );
 
             return (
               <div
