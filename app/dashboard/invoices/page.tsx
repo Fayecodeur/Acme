@@ -1,5 +1,7 @@
+import { fetchIvoicesPages } from "@/app/lib/data";
 import { lusitana } from "@/app/ui/font";
 import CreateInvoices from "@/app/ui/invoices/Buttons";
+import Pagination from "@/app/ui/invoices/Pagination";
 import InvoicesTable from "@/app/ui/invoices/Table";
 import Search from "@/app/ui/Search";
 import { InvoicesTableSkeleton } from "@/app/ui/skeletons";
@@ -13,6 +15,8 @@ export default async function Factures({
   const query = searchParams?.query || "";
   const currentPage = Number(searchParams?.page) || 1;
 
+  const totalPages = await fetchIvoicesPages(query);
+
   return (
     <div className="w-full">
       <div className="w-full flex items-center justify-between">
@@ -25,6 +29,9 @@ export default async function Factures({
       <Suspense key={query + currentPage} fallback={<InvoicesTableSkeleton />}>
         <InvoicesTable query={query} currentPage={currentPage} />
       </Suspense>
+      <div className="mt-5 flex w-full justify-center">
+        <Pagination totalPages={totalPages} />
+      </div>
     </div>
   );
 }
