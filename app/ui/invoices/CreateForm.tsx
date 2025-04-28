@@ -1,3 +1,4 @@
+import { CustomerField } from "@/app/lib/definitions";
 import { Button } from "@/app/ui/Button";
 import {
   CheckIcon,
@@ -6,8 +7,11 @@ import {
   UserCircleIcon,
 } from "@heroicons/react/24/outline";
 import Link from "next/link";
-
-export default function CreateForm() {
+export default function CreateForm({
+  customers,
+}: {
+  customers: CustomerField[];
+}) {
   return (
     <form>
       <div className="rounded-md bg-gray-50 p-4 md:p-6 shadow-sm">
@@ -29,7 +33,11 @@ export default function CreateForm() {
               <option value="" disabled>
                 Choisir un client
               </option>
-              {/* MAP CUSTOMERS */}
+              {customers.map((customer) => (
+                <option key={customer.id} value={customer.id}>
+                  {customer.name}
+                </option>
+              ))}
             </select>
             <UserCircleIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-400" />
           </div>
