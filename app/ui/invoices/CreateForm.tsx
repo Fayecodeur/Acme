@@ -1,3 +1,4 @@
+import { createInvoice } from "@/app/lib/actions";
 import { CustomerField } from "@/app/lib/definitions";
 import { Button } from "@/app/ui/Button";
 import {
@@ -13,7 +14,7 @@ export default function CreateForm({
   customers: CustomerField[];
 }) {
   return (
-    <form>
+    <form action={createInvoice}>
       <div className="rounded-md bg-gray-50 p-4 md:p-6 shadow-sm">
         {/* Nom du client */}
         <div className="mb-4">
