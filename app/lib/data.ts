@@ -2,7 +2,12 @@ import { sql } from "@vercel/postgres";
 import { unstable_noStore as noStore } from "next/cache";
 
 import { formatCurrency } from "./utils";
-import { Revenue, LatestInvoiceRaw, InvoicesTable } from "./definitions";
+import {
+  Revenue,
+  LatestInvoiceRaw,
+  InvoicesTable,
+  CustomerField,
+} from "./definitions";
 export async function fetchRevenue() {
   noStore();
   try {
@@ -123,5 +128,18 @@ export async function fetchIvoicesPages(query: string) {
   } catch (error) {
     console.error("Database error", error);
     throw new Error("Échec lors de la récupération du total de factures");
+  }
+}
+
+export async function fetchCustomers() {
+  noStore();
+  try {
+    const data =
+      await sql<CustomerField>`SELECT id, name FROM customers ORDER BY name ASC`;
+    const customers = data.rows;
+    return customers;
+  } catch (error) {
+    console.error("Database error", error);
+    throw new Error("Échec lors de la récupération des clients");
   }
 }
