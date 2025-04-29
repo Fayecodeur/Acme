@@ -7,6 +7,7 @@ import {
   LatestInvoiceRaw,
   InvoicesTable,
   CustomerField,
+  InvoiceForm,
 } from "./definitions";
 export async function fetchRevenue() {
   noStore();
@@ -138,6 +139,25 @@ export async function fetchCustomers() {
       await sql<CustomerField>`SELECT id, name FROM customers ORDER BY name ASC`;
     const customers = data.rows;
     return customers;
+  } catch (error) {
+    console.error("Database error", error);
+    throw new Error("Échec lors de la récupération des clients");
+  }
+}
+
+export async function fetchInvoiceById(id: string) {
+  noStore();
+  try {
+    const data = await sql<InvoiceForm>`
+  SELECT invoices.id, invoices.customer_id, invoices.amount, invoices.status 
+  FROM invoices 
+  WHERE invoices.id = ${id}
+`;
+    const invoice = data.rows.map((invoice) => ({
+      ...invoice,
+      amount: invoice.amount / 100,
+    }));
+    return invoice[0];
   } catch (error) {
     console.error("Database error", error);
     throw new Error("Échec lors de la récupération des clients");
