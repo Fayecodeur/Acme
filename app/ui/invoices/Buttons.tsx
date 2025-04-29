@@ -1,4 +1,5 @@
-import { PencilIcon, PlusIcon } from "@heroicons/react/24/outline";
+import { deleteInvoice } from "@/app/lib/actions";
+import { PencilIcon, PlusIcon, TrashIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
 export default function CreateInvoices() {
   return (
@@ -20,5 +21,18 @@ export function UpdateInvoice({ id }: { id: string }) {
     >
       <PencilIcon className="w-5" />
     </Link>
+  );
+}
+
+export function DeleteInvoice({ id }: { id: string }) {
+  const DeleteInvoiceWithId = deleteInvoice.bind(null, id);
+
+  return (
+    <form action={DeleteInvoiceWithId}>
+      <button type="submit" className="rounded-md border p-2 hover:bg-gray-100">
+        <TrashIcon className="w-5" />
+        <span className="sr-only">Supprimer</span>
+      </button>
+    </form>
   );
 }
