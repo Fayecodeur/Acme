@@ -5,6 +5,14 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 
+export type State = {
+  error?: {
+    customerId?: string[];
+    amount?: string[];
+    status?: string[];
+  };
+  message?: string | null;
+};
 const FormSchema = z.object({
   id: z.string(),
   customerId: z.string({
@@ -20,16 +28,7 @@ const FormSchema = z.object({
 });
 
 const CreateInvoice = FormSchema.omit({ id: true, date: true });
-const UpdateteInvoice = FormSchema.omit({ id: true, date: true });
-
-export type State = {
-  error?: {
-    cuscustomerId?: string[];
-    amount?: string[];
-    status?: string[];
-  };
-  message?: string | null;
-};
+const UpdateInvoice = FormSchema.omit({ id: true, date: true });
 
 export async function createInvoice(prevState: State, formData: FormData) {
   const validatedFields = CreateInvoice.safeParse({
@@ -61,21 +60,41 @@ export async function createInvoice(prevState: State, formData: FormData) {
   redirect("/dashboard/invoices");
 }
 
-export async function updateInvoice(id: string, formData: FormData) {
-  const { customerId, amount, status } = CreateInvoice.parse({
-    customerId: formData.get("customerId"),
-    amount: formData.get("amount"),
-    status: formData.get("status"),
+export async function updateInvoice(
+  id: string,
+  prevState: State,
+  formData: FormData
+): Promise<State> {
+  const customerId = formData.get("customerId");
+  const amount = formData.get("amount");
+  const status = formData.get("status");
+
+  const validatedFields = UpdateInvoice.safeParse({
+    customerId,
+    amount,
+    status,
   });
 
-  const amountInCents = amount * 100;
+  if (!validatedFields.success) {
+    return {
+      error: validatedFields.error.flatten().fieldErrors,
+      message: "Champs manquants. Échec lors de la mise à jour de la facture",
+    };
+  }
+
+  const {
+    customerId: validCustomerId,
+    amount: validAmount,
+    status: validStatus,
+  } = validatedFields.data;
+  const amountInCents = validAmount * 100;
 
   try {
     await sql`
-    UPDATE invoices 
-    SET customer_id = ${customerId}, amount = ${amountInCents}, status = ${status}
-    WHERE id = ${id}
-  `;
+      UPDATE invoices 
+      SET customer_id = ${validCustomerId}, amount = ${amountInCents}, status = ${validStatus}
+      WHERE id = ${id}
+    `;
   } catch (error) {
     return { message: "Erreur lors de la mise à jour de la facture" };
   }
@@ -89,6 +108,6 @@ export async function deleteInvoice(id: string) {
     await sql`DELETE FROM invoices WHERE id = ${id}`;
     revalidatePath("/dashboard/invoices");
   } catch (error) {
-    return { message: "Erreur lors de la suppréssion de la facture" };
+    console.error("Erreur lors de la suppression de la facture :", error);
   }
 }
